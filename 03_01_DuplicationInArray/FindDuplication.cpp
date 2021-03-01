@@ -18,7 +18,7 @@ https://github.com/zhedahht/CodingInterviewChinese2/blob/master/LICENSE.txt)
 // 那么对应的输出是重复的数字2或者3。
 
 #include <cstdio>
-
+#include <iostream>
 // 参数:
 //        numbers:     一个整数数组
 //        length:      数组的长度
@@ -27,6 +27,46 @@ https://github.com/zhedahht/CodingInterviewChinese2/blob/master/LICENSE.txt)
 //        true  - 输入有效，并且数组中存在重复的数字
 //        false - 输入无效，或者数组中没有重复的数字
 bool duplicate(int numbers[], int length, int* duplication)
+{    
+    //std::cout<<"sizeof(numbers):"<<sizeof(numbers)<<std::endl;
+    if (numbers==nullptr|| length<=0  )
+    //不需要判断(sizeof(numbers)/4)!=length ！sizeof(numbers)一定是8，因为numbers作为形参会变成指针
+        return false;
+  
+    for(int i = 0; i < length; ++i)//检查超出范围的数字！
+    {
+        if(numbers[i] < 0 || numbers[i] > length - 1)
+            return false;
+    }
+
+    int a=0;
+    int i=0;
+    while(i<length)
+    {
+        if (numbers[i]==i)
+            i++;
+        else
+            {
+                if (numbers[i]==numbers[numbers[i]])
+                    {
+                        *duplication=numbers[i];
+                        return true;
+                    }
+                else
+                    {
+                        a=numbers[i];
+                        numbers[i]=numbers[a];
+                        numbers[a]=a;
+                    }
+            } 
+    }
+    if(i==length)
+        return false;
+}
+
+
+
+bool duplicate_book(int numbers[], int length, int* duplication)
 {
     if(numbers == nullptr || length <= 0)
         return false;
@@ -140,7 +180,7 @@ void test6()
     test("Test6", numbers, 0, duplications, sizeof(duplications) / sizeof(int), false);
 }
 
-void main()
+int main()
 {
     test1();
     test2();
@@ -148,4 +188,5 @@ void main()
     test4();
     test5();
     test6();
+    return 0;
 }

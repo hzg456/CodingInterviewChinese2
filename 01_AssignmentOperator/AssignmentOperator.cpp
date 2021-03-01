@@ -28,10 +28,29 @@ public:
     CMyString& operator = (const CMyString& str);
 
     void Print();
+    void changedata(char* pData = nullptr);
       
 private:
     char* m_pData;
 };
+
+void CMyString::changedata(char* pData)
+{
+    if(pData == nullptr)
+    {
+        delete[] m_pData;
+        
+        m_pData = new char[1];
+        m_pData[0] = '\0';
+    }
+    else
+    {
+        delete[] m_pData;
+        int length = strlen(pData);
+        m_pData = new char[length + 1];
+        strcpy(m_pData, pData);
+    }
+}
 
 CMyString::CMyString(char *pData)
 {
@@ -50,6 +69,7 @@ CMyString::CMyString(char *pData)
 
 CMyString::CMyString(const CMyString &str)
 {
+    //这是构造函数，故不需要考虑是否等于自己的情况，即不可能通过自己构造自己
     int length = strlen(str.m_pData);
     m_pData = new char[length + 1];
     strcpy(m_pData, str.m_pData);
@@ -62,14 +82,36 @@ CMyString::~CMyString()
 
 CMyString& CMyString::operator = (const CMyString& str)
 {
-    if(this == &str)
-        return *this;
+    // if(this == &str)
+    //     return *this;
 
-    delete []m_pData;
-    m_pData = nullptr;
+    // delete []m_pData;
+    // m_pData = nullptr;
 
-    m_pData = new char[strlen(str.m_pData) + 1];
-    strcpy(m_pData, str.m_pData);
+    // m_pData = new char[strlen(str.m_pData) + 1];
+    // strcpy(m_pData, str.m_pData);
+
+    // return *this;
+
+    //高阶写法：
+    CMyString strTemp(str);//构造strTemp时调用了new 如内存不足会报错
+    if (this!=&str)
+    {
+        //CMyString strTemp(str);//构造strTemp时调用了new 如内存不足会报错
+        //char* pTemp=strTemp.m_pData;
+        //strTemp.m_pData=m_pData;
+        //m_pData=pTemp;
+        m_pData=str.m_pData;//为什么这样不行？
+        
+        // delete[] m_pData;
+        // m_pData = new char[strlen(str.m_pData) + 1];
+        
+        //strcpy(m_pData,strTemp.m_pData);
+        printf("m_pData is: %s.\n", m_pData);
+        printf("strTemp.m_pData is: %s.\n", strTemp.m_pData);
+        
+    }
+    printf("m_pData is: %s.\n", m_pData);
 
     return *this;
 }
@@ -138,11 +180,73 @@ void Test3()
     printf(".\n");
 }
 
+void Test4()
+{
+    printf("Test4 begins:\n");
+
+    char* text = "Hello world";
+
+    CMyString str1(text);
+    CMyString str2, str3;
+    str2 = str1;
+
+    printf("The str1 is: ");
+    str1.Print();
+    printf(".\n");
+
+    printf("The str2 is: ");
+    str2.Print();
+    printf(".\n");
+
+    char* text2 = "change!";
+    str1.changedata(text2);
+    
+    printf("The str1 is: ");
+    str1.Print();
+    printf(".\n");
+
+    printf("The str2 is: ");
+    str2.Print();
+    printf(".\n");
+
+}
+
+void Test5()
+{
+    printf("Test4 begins:\n");
+    char* text = "Hello world";
+    char* text2=text;
+    char* text3;
+    //strcpy(text3,text);
+    //strcpy(text2,text); strcpy是深拷贝，=是浅拷贝，但是之间的修改都不会影响另一个
+    printf(text);
+    printf(".\n");
+    printf(text2);
+    printf(".\n");
+    //printf(text3);
+    printf(".\n");
+
+    text="hello";
+    text2="hello2";
+
+    // delete[] text;
+    //printf(text3);
+    //printf(".\n");
+    printf(text);
+    printf(".\n");
+    printf(text2);
+    printf(".\n");
+    printf("test5 end\n");
+
+}
+
 int main(int argc, char* argv[])
 {
-    Test1();
-    Test2();
-    Test3();
+    // Test1();
+    // Test2();
+    // Test3();
+    Test4();
+    //Test5();
 
     return 0;
 }

@@ -30,6 +30,57 @@ int countRange(const int* numbers, int length, int start, int end);
 //        负数  - 输入无效，或者数组中没有重复的数字
 int getDuplication(const int* numbers, int length)
 {
+    if(numbers==nullptr || length<=0)
+        return -1;
+    
+    for (int i=0;i<length;i++)
+    {
+        if (numbers[i]<1|| numbers[i]>length-1)
+            return -1; 
+    }
+
+    int start=1;
+    int end=length-1;
+    int middle=int((end-start)/2)+start;
+    int count=0;
+
+    while (true)
+    {
+    count=countRange(numbers, length,start, middle);
+    std::cout<<start<<"   "<<middle<<std::endl;
+    if (start==end)
+    {
+        if (count>1)
+            return start;
+        else
+            return -1;            
+    }
+    else
+    {
+        if (count>middle-start+1)
+        {
+            start=start;
+            end=middle;
+            middle=int((end-start)/2)+start;
+        }
+        else
+        {
+            start=middle+1;
+            end=end;
+            middle=int((end-start)/2)+start;
+        }
+    }
+    }        
+}
+
+// 参数:
+//        numbers:     一个整数数组
+//        length:      数组的长度
+// 返回值:             
+//        正数  - 输入有效，并且数组中存在重复的数字，返回值为重复的数字
+//        负数  - 输入无效，或者数组中没有重复的数字
+int getDuplication_book(const int* numbers, int length)
+{
     if(numbers == nullptr || length <= 0)
         return -1;
 
@@ -71,6 +122,7 @@ int countRange(const int* numbers, int length, int start, int end)
 void test(const char* testName, int* numbers, int length, int* duplications, int dupLength)
 {
     int result = getDuplication(numbers, length);
+    std::cout<< "result is "<<result<<std::endl;
     for(int i = 0; i < dupLength; ++i)
     {
         if(result == duplications[i])
@@ -162,8 +214,9 @@ void test10()
     test("test10", numbers, 0, duplications, sizeof(duplications) / sizeof(int));
 }
 
-void main()
+int main()
 {
+    test2();
     test1();
     test2();
     test3();
